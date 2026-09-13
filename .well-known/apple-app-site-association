@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["DFTNY4P4YQ.com.florianpeter.TravelCompanion"],
+        "components": [
+          { "/": "/join", "comment": "Einladungslink mit Code" },
+          { "/": "/join/*" }
+        ]
+      }
+    ]
+  }
+}
