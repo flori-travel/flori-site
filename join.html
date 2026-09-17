@@ -26,13 +26,17 @@ small{display:block;opacity:.75;font-size:13px;line-height:1.4;margin-top:14px}
 <div id="without" hidden><p>Dieser Link ist unvollständig. Bitte den Absender um den Einladungscode.</p><a class="ghost" href="https://testflight.apple.com/join/94GDYPF7">flori laden</a></div>
 <script>
 (function(){
-  var raw=new URLSearchParams(location.search).get("c")||"";
+  var params=new URLSearchParams(location.search);
+  var raw=params.get("c")||"";
   var code=raw.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8);
   if(code.length<4){document.getElementById("with").hidden=true;document.getElementById("without").hidden=false;return;}
-  var app="flori://join?c="+code;
+  // „then“ mitnehmen (z. B. then=dna → nach dem Beitritt direkt zum Reisetyp-Test).
+  var then=(params.get("then")||"").replace(/[^a-z]/g,"").slice(0,10);
+  var app="flori://join?c="+code+(then?"&then="+then:"");
   document.getElementById("code").textContent=code;
   document.getElementById("open").href=app;
-  setTimeout(function(){window.location.href=app;},350);
+  // Kein automatischer Sprung: Ohne installierte App zeigt Safari sonst eine
+  // Fehlermeldung („Adresse ungültig“). Ein Tipp auf den Knopf genügt.
 })();
 </script>
 </div></body></html>
