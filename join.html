@@ -5,10 +5,14 @@ body{margin:0;font-family:-apple-system,system-ui,sans-serif;background:linear-g
 .card{max-width:420px;width:100%}
 h1{font-size:28px;margin:0 0 8px}
 p{font-size:16px;line-height:1.45;opacity:.92;margin:0 0 18px}
-.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:34px;letter-spacing:8px;font-weight:700;background:rgba(255,255,255,.14);border-radius:18px;padding:16px 8px;margin:0 0 18px}
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:34px;letter-spacing:8px;font-weight:700;background:rgba(255,255,255,.14);border-radius:18px;padding:16px 8px;margin:0 0 10px;user-select:all;-webkit-user-select:all}
 a.btn{display:block;background:#fff;color:#297A4B;font-weight:700;font-size:17px;text-decoration:none;border-radius:16px;padding:15px;margin:0 0 10px}
 a.ghost{display:block;color:#fff;font-weight:600;font-size:15px;text-decoration:none;border:1.5px solid rgba(255,255,255,.55);border-radius:16px;padding:13px;margin:0 0 10px}
 small{display:block;opacity:.75;font-size:13px;line-height:1.4;margin-top:14px}
+button.ghost{display:block;width:100%;box-sizing:border-box;background:transparent;color:#fff;font-weight:600;font-size:15px;border:1.5px solid rgba(255,255,255,.55);border-radius:16px;padding:13px;margin:0 0 10px;font-family:inherit;-webkit-appearance:none}
+.steps{text-align:left;background:rgba(0,0,0,.14);border-radius:18px;padding:14px 16px;margin:18px 0 0;font-size:14px;line-height:1.5}
+.steps b{display:block;font-size:13px;letter-spacing:1px;text-transform:uppercase;opacity:.75;margin-bottom:6px}
+.steps ol{margin:0;padding-left:20px}
 
 .sloth{width:150px;height:auto;margin:0 auto 14px;display:block;filter:drop-shadow(0 12px 24px rgba(0,0,0,.25))}
 .brand{font-size:44px;font-weight:800;letter-spacing:-.5px;margin:0 0 4px}
@@ -20,9 +24,15 @@ small{display:block;opacity:.75;font-size:13px;line-height:1.4;margin-top:14px}
 <img class="sloth" src="sloth.png" alt="flori">
 <h1>Komm mit auf die Reise</h1>
 <div id="with"><p>Dein Einladungscode für flori:</p><div class="code" id="code"></div>
+<button class="ghost" id="copy" type="button">Code kopieren</button>
 <a class="btn" id="open" href="#">In flori öffnen</a>
-<a class="ghost" href="https://testflight.apple.com/join/94GDYPF7">flori noch nicht installiert? App laden</a>
-<small>Nach der Installation einfach diesen Link noch einmal antippen, dann trittst du der Reise direkt bei. Oder in flori unter „Meine Reisen“ auf „Reise beitreten“ und den Code eingeben.</small></div>
+<a class="ghost" id="dl" href="https://testflight.apple.com/join/94GDYPF7">flori noch nicht installiert? App laden</a>
+<div class="steps"><b>Ohne App – so geht's</b><ol>
+<li>„Code kopieren“ antippen – der Code bleibt im Zwischenspeicher deines iPhones.</li>
+<li>„App laden“ und flori installieren.</li>
+<li>flori öffnen und im Onboarding auf „Eingeladen?“ tippen – flori bietet dir den Code aus der Zwischenablage an. Oder hierher zurück und „In flori öffnen“ antippen.</li>
+</ol></div>
+<small id="hint"></small></div>
 <div id="without" hidden><p>Dieser Link ist unvollständig. Bitte den Absender um den Einladungscode.</p><a class="ghost" href="https://testflight.apple.com/join/94GDYPF7">flori laden</a></div>
 <script>
 (function(){
@@ -33,10 +43,28 @@ small{display:block;opacity:.75;font-size:13px;line-height:1.4;margin-top:14px}
   // „then“ mitnehmen (z. B. then=dna → nach dem Beitritt direkt zum Reisetyp-Test).
   var then=(params.get("then")||"").replace(/[^a-z]/g,"").slice(0,10);
   var app="flori://join?c="+code+(then?"&then="+then:"");
+  var link="https://flori-travel.de/join?c="+code+(then?"&then="+then:"");
+  var hint=document.getElementById("hint");
   document.getElementById("code").textContent=code;
   document.getElementById("open").href=app;
+  hint.textContent="Merk dir zur Sicherheit den Code: "+code;
   // Kein automatischer Sprung: Ohne installierte App zeigt Safari sonst eine
   // Fehlermeldung („Adresse ungültig“). Ein Tipp auf den Knopf genügt.
+  // Kopieren: Der Link wandert in die Zwischenablage, flori erkennt ihn nach der
+  // Installation. Zwei Wege, weil eingebettete Browser (WhatsApp) navigator.clipboard
+  // nicht immer freigeben – der alte execCommand-Weg greift dort noch.
+  function done(){hint.textContent="Kopiert ✓ – nach der Installation bietet flori dir die Einladung an.";}
+  function copyText(){
+    var ok=false;
+    try{
+      var ta=document.createElement("textarea");ta.value=link;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.top="0";ta.style.opacity="0";
+      document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,99999);ok=document.execCommand("copy");document.body.removeChild(ta);
+    }catch(e){}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(link).then(done,function(){if(ok){done();}else{hint.textContent="Kopieren ging hier nicht – merk dir den Code: "+code;}});}
+    else if(ok){done();}else{hint.textContent="Kopieren ging hier nicht – merk dir den Code: "+code;}
+  }
+  document.getElementById("copy").addEventListener("click",copyText);
+  document.getElementById("dl").addEventListener("click",copyText);
 })();
 </script>
 </div></body></html>
