@@ -24,12 +24,10 @@ button.ghost{display:block;width:100%;box-sizing:border-box;background:transpare
 <img class="sloth" src="sloth.png" alt="flori">
 <h1>Komm mit auf die Reise</h1>
 <div id="with"><p>Dein Einladungscode für flori:</p><div class="code" id="code"></div>
-<button class="ghost" id="copy" type="button">Code kopieren</button>
 <a class="btn" id="open" href="#">In flori öffnen</a>
 <a class="ghost" id="dl" href="https://testflight.apple.com/join/94GDYPF7">flori noch nicht installiert? App laden</a>
 <div class="steps"><b>Ohne App – so geht's</b><ol>
-<li>„Code kopieren“ antippen – der Code bleibt im Zwischenspeicher deines iPhones.</li>
-<li>„App laden“ und flori installieren.</li>
+<li>„App laden“ antippen und flori installieren – der Code wandert dabei von selbst in den Zwischenspeicher deines iPhones.</li>
 <li>flori öffnen: Nach deinem Namen zeigt flori „Du bist eingeladen!“ – ein Tipp auf „Direkt beitreten“, fertig. Oder hierher zurück und „In flori öffnen“ antippen.</li>
 </ol></div>
 <small id="hint"></small></div>
@@ -63,7 +61,6 @@ button.ghost{display:block;width:100%;box-sizing:border-box;background:transpare
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(link).then(done,function(){if(ok){done();}else{hint.textContent="Kopieren ging hier nicht – merk dir den Code: "+code;}});}
     else if(ok){done();}else{hint.textContent="Kopieren ging hier nicht – merk dir den Code: "+code;}
   }
-  document.getElementById("copy").addEventListener("click",copyText);
   document.getElementById("dl").addEventListener("click",copyText);
 })();
 </script>
